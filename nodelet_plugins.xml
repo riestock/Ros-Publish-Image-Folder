@@ -1,0 +1,8 @@
+<library path="lib/libpublish_image_folder_nodelet">
+  <class name="publish_image_folder/PublishImageFolderNodelet" type="publish_image_folder::PublishImageFolderNodelet"
+    base_class_type="nodelet::Nodelet">
+    <description> 
+      Todo
+    </description>
+  </class>
+</library>

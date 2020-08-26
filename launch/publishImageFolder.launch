@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- manager -->
+  <arg name="use_nodelet" default="true"/>
+  <arg name="start_manager" default="true"/>
+  <arg name="manager" default="standalone_nodelet"/>
+
+
+  <arg name="topic_pub_image" default="/image_folder/image_raw" />
+
+  <arg name="image_folder" default="/home/rie/Archive/data_sets/pose_images_cropped/" />
+  <arg name="debug_window" default="true" />
+  <arg name="rate" default="1" />
+
+  <group ns="/publish_image_folder">s
+
+    <node pkg="publish_image_folder"
+          type="publish_image_folder_main"
+          name="PublishImageFolderMain"
+          unless="$(arg use_nodelet)"
+          output="screen">
+      <param name="topic_pub_image" value="$(arg topic_pub_image)" />
+      <param name="image_folder" value="$(arg image_folder)" />
+      <param name="debug_window" value="$(arg debug_window)" />
+      <param name="rate" value="$(arg rate)" />
+    </node>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="$(arg manager)"
+          args="manager"
+          if="$(arg start_manager)"
+          output="screen"/>
+
+    <node pkg="nodelet" 
+          type="nodelet" 
+          name="PublishImageFolderNodelet"
+          args="load publish_image_folder/PublishImageFolderNodelet $(arg manager)"
+          if="$(arg use_nodelet)"
+          output="screen">
+      <param name="topic_pub_image" value="$(arg topic_pub_image)" />
+      <param name="image_folder" value="$(arg image_folder)" />
+      <param name="debug_window" value="$(arg debug_window)" />
+      <param name="rate" value="$(arg rate)" />
+    </node>
+  </group>
+</launch>

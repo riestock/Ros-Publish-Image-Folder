@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/rie/Workspaces/ros/github/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/home/rie/Workspaces/ros/github/src/Ros-Extrinsic-Calibration/include/**",
+                "/home/rie/Workspaces/ros/github/src/Ros-Marker-Detection/include/**",
+                "/home/rie/Workspaces/ros/github/src/openpose_ros/openpose_ros/include/**",
+                "/home/rie/Workspaces/ros/github/src/Ros-Pointcloud-Fusion/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}
