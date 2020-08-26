@@ -13,6 +13,7 @@ namespace publish_image_folder
                                                                                                       m_topic_pub_image(""),
                                                                                                       m_running(false),
                                                                                                       m_debug_window(true),
+                                                                                                      m_loop(true),
                                                                                                       m_rate(1)
   {
   }
@@ -80,6 +81,7 @@ namespace publish_image_folder
   {
     return m_priv_nh.getParam("rate", m_rate) &&
            m_priv_nh.getParam("debug_window", m_debug_window) &&
+           m_priv_nh.getParam("loop", m_loop) &&
            m_priv_nh.getParam("image_folder", m_image_folder) &&
            m_priv_nh.getParam("topic_pub_image", m_topic_pub_image);
   }
@@ -94,14 +96,7 @@ namespace publish_image_folder
 
   void PublishImageFolder::startReadingFolder()
   {
-    // cv::Mat image;
-    // sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
-
-    // std::filesystem::directory_iterator(m_image_folder);
     boost::filesystem::path p(m_image_folder);
-
-
-
 
     if (!(exists(p)))
     {
@@ -116,8 +111,7 @@ namespace publish_image_folder
     }
 
     boost::filesystem::directory_iterator it{p};
-
-    // boost::filesystem::directory_entry &entry;
+    boost::filesystem::directory_iterator it_end();
 
     cv::Mat image;
     sensor_msgs::ImagePtr msg;
@@ -125,6 +119,19 @@ namespace publish_image_folder
     ros::Rate loop_rate(m_rate);
     while (m_nh.ok())
     {
+      if (it == boost::filesystem::directory_iterator{})
+      {
+        if (m_loop)
+        {
+          ROS_WARN("[PublishImageFolder] All image published. Restart from the beginning!");
+          it = boost::filesystem::directory_iterator{p};
+        }else
+        {
+          ROS_WARN("[PublishImageFolder] All image published!");
+          return;
+        }
+      }
+
       ROS_INFO("[PublishImageFolder] Publishing %s", it->path().string().c_str());
 
       image = cv::imread(it->path().string(), cv::IMREAD_COLOR);
@@ -135,6 +142,8 @@ namespace publish_image_folder
 
       msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
       m_it_pub_image.publish(msg);
+
+     
 
       it++;
       ros::spinOnce();

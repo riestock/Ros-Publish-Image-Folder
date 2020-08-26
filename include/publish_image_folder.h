@@ -18,6 +18,7 @@ namespace publish_image_folder
 
     bool m_running;
     bool m_debug_window;
+    bool m_loop;
     int m_rate;
 
     int initialize();

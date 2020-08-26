@@ -3,15 +3,16 @@
 <launch>
 
   <!-- manager -->
-  <arg name="use_nodelet" default="true"/>
-  <arg name="start_manager" default="true"/>
+  <arg name="use_nodelet" default="false"/>
+  <arg name="start_manager" default="false"/>
   <arg name="manager" default="standalone_nodelet"/>
 
 
   <arg name="topic_pub_image" default="/image_folder/image_raw" />
 
-  <arg name="image_folder" default="/home/rie/Archive/data_sets/pose_images_cropped/" />
-  <arg name="debug_window" default="true" />
+  <arg name="image_folder" default="/home/rie/Archive/data_sets/pose_images_cropped/test/" />
+  <arg name="debug_window" default="false" />
+  <arg name="loop" default="true" />
   <arg name="rate" default="1" />
 
   <group ns="/publish_image_folder">s
@@ -24,6 +25,7 @@
       <param name="topic_pub_image" value="$(arg topic_pub_image)" />
       <param name="image_folder" value="$(arg image_folder)" />
       <param name="debug_window" value="$(arg debug_window)" />
+      <param name="loop" value="$(arg loop)" />
       <param name="rate" value="$(arg rate)" />
     </node>
 
@@ -43,6 +45,7 @@
       <param name="topic_pub_image" value="$(arg topic_pub_image)" />
       <param name="image_folder" value="$(arg image_folder)" />
       <param name="debug_window" value="$(arg debug_window)" />
+      <param name="loop" value="$(arg loop)" />
       <param name="rate" value="$(arg rate)" />
     </node>
   </group>
