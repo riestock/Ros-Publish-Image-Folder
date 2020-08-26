@@ -136,6 +136,7 @@ namespace publish_image_folder
       msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
       m_it_pub_image.publish(msg);
 
+      it++;
       ros::spinOnce();
       loop_rate.sleep();
     }
