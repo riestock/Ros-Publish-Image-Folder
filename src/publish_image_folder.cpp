@@ -3,7 +3,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <boost/filesystem.hpp>
-#include <iostream>
 
 namespace publish_image_folder
 {
@@ -126,13 +125,13 @@ namespace publish_image_folder
     ros::Rate loop_rate(m_rate);
     while (m_nh.ok())
     {
+      ROS_INFO("[PublishImageFolder] Publishing %s", it->path().string().c_str());
+
       image = cv::imread(it->path().string(), cv::IMREAD_COLOR);
 
       if (m_debug_window)
-      {
-        std::cout << *it++ << '\n';
         cv::imshow(m_window_name, image);
-      }
+      
 
       msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
       m_it_pub_image.publish(msg);
