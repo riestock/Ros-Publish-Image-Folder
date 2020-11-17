@@ -90,9 +90,7 @@ namespace publish_image_folder
   {
     ROS_INFO("[PublishImageFolder] Initializing Publishers");
     m_it_pub_image = m_it.advertise("camera/image", 1);
-
   }
-
 
   void PublishImageFolder::startReadingFolder()
   {
@@ -125,7 +123,8 @@ namespace publish_image_folder
         {
           ROS_WARN("[PublishImageFolder] All image published. Restart from the beginning!");
           it = boost::filesystem::directory_iterator{p};
-        }else
+        }
+        else
         {
           ROS_WARN("[PublishImageFolder] All image published!");
           return;
@@ -138,54 +137,52 @@ namespace publish_image_folder
 
       if (m_debug_window)
         cv::imshow(m_window_name, image);
-      
 
       msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
       m_it_pub_image.publish(msg);
-
-     
 
       it++;
       ros::spinOnce();
       loop_rate.sleep();
     }
 
+    ROS_WARN("[PublishImageFolder] Stop publishing!");
     return;
   }
 
-class PublishImageFolderNodelet : public nodelet::Nodelet
-{
-private:
-  PublishImageFolder *publish_image_folder_ptr;
-
-public:
-  PublishImageFolderNodelet() : Nodelet(), publish_image_folder_ptr(nullptr)
+  class PublishImageFolderNodelet : public nodelet::Nodelet
   {
-    ROS_INFO("[PublishImageFolderNodelet] Constructor call");
-  }
+  private:
+    PublishImageFolder *publish_image_folder_ptr;
 
-  ~PublishImageFolderNodelet() override
-  {
-    ROS_INFO("[PublishImageFolderNodelet] Destructor call");
-    if (publish_image_folder_ptr)
+  public:
+    PublishImageFolderNodelet() : Nodelet(), publish_image_folder_ptr(nullptr)
     {
-      publish_image_folder_ptr->stop();
-      delete publish_image_folder_ptr;
+      ROS_INFO("[PublishImageFolderNodelet] Constructor call");
     }
-  }
 
-  void onInit() override
-  {
-    ROS_INFO("[PublishImageFolderNodelet] onInit");
-    publish_image_folder_ptr = new PublishImageFolder(getNodeHandle(), getPrivateNodeHandle());
-    if (!publish_image_folder_ptr->start())
+    ~PublishImageFolderNodelet() override
     {
-      delete publish_image_folder_ptr;
-      publish_image_folder_ptr = nullptr;
-      throw nodelet::Exception("[PublishImageFolderNodelet] Could not start nodelet");
+      ROS_INFO("[PublishImageFolderNodelet] Destructor call");
+      if (publish_image_folder_ptr)
+      {
+        publish_image_folder_ptr->stop();
+        delete publish_image_folder_ptr;
+      }
     }
-  }
-};
+
+    void onInit() override
+    {
+      ROS_INFO("[PublishImageFolderNodelet] onInit");
+      publish_image_folder_ptr = new PublishImageFolder(getNodeHandle(), getPrivateNodeHandle());
+      if (!publish_image_folder_ptr->start())
+      {
+        delete publish_image_folder_ptr;
+        publish_image_folder_ptr = nullptr;
+        throw nodelet::Exception("[PublishImageFolderNodelet] Could not start nodelet");
+      }
+    }
+  };
 
 } // namespace publish_image_folder
 #include <pluginlib/class_list_macros.h>
